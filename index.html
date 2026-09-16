@@ -459,6 +459,74 @@
       margin-top: 10px;
     }
 
+    /* Cloud Sync Chip & Live Toast */
+    .cloud-sync-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      background: rgba(12, 18, 38, 0.7);
+      border: 1px solid rgba(255, 215, 0, 0.35);
+      border-radius: 20px;
+      padding: 4px 14px;
+      font-size: 0.76rem;
+      color: #cbd8ee;
+      margin-bottom: 22px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    }
+    .sync-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #00e676;
+      box-shadow: 0 0 8px #00e676;
+      display: inline-block;
+      transition: all 0.3s ease;
+    }
+    .sync-dot.syncing {
+      background: #ffd700;
+      box-shadow: 0 0 8px #ffd700;
+      animation: pulseSync 1s infinite alternate;
+    }
+    .sync-dot.offline {
+      background: #ff5252;
+      box-shadow: 0 0 8px #ff5252;
+    }
+    @keyframes pulseSync {
+      from { transform: scale(0.8); opacity: 0.6; }
+      to { transform: scale(1.3); opacity: 1; }
+    }
+
+    .candle-live-toast {
+      position: fixed;
+      top: 24px;
+      left: 50%;
+      transform: translateX(-50%) translateY(-50px);
+      background: linear-gradient(135deg, rgba(19, 29, 51, 0.97) 0%, rgba(12, 18, 34, 0.98) 100%);
+      border: 1.5px solid #ffd700;
+      color: #ffffff;
+      padding: 12px 24px;
+      border-radius: 30px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      box-shadow: 0 10px 35px rgba(0, 0, 0, 0.85), 0 0 20px rgba(255, 215, 0, 0.4);
+      z-index: 9999;
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.4s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      max-width: 90vw;
+      text-align: center;
+    }
+    .candle-live-toast.show {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+    }
+    .candle-live-toast .toast-icon {
+      font-size: 1.3rem;
+    }
+
     /* Modals */
     .modal-overlay {
       display: none;
@@ -658,6 +726,11 @@
         Mỗi lời chúc gửi đến chị Quỳnh An đều đồng thời được thắp sáng thành một ngọn nến lung linh trên chiếc bánh kem bên trên!
       </div>
 
+      <div class="cloud-sync-chip" id="cloudSyncChip" title="Trạng thái kết nối Cloud Database">
+        <span class="sync-dot" id="syncDot"></span>
+        <span id="syncStatusText">Đồng bộ đám mây: Trực tuyến</span>
+      </div>
+
       <div class="candles-grid" id="candlesGrid">
         <!-- Rendered via JS -->
       </div>
@@ -713,8 +786,6 @@
     const topStarsData = [{"x": 12.3, "y": 7.5, "char": "Q", "part": "ring", "lesson_idx": 0}, {"x": 11.48, "y": 10.19, "char": "Q", "part": "ring", "lesson_idx": 1}, {"x": 9.5, "y": 11.3, "char": "Q", "part": "ring", "lesson_idx": 2}, {"x": 7.52, "y": 10.19, "char": "Q", "part": "ring", "lesson_idx": 3}, {"x": 6.7, "y": 7.5, "char": "Q", "part": "ring", "lesson_idx": 4}, {"x": 7.52, "y": 4.81, "char": "Q", "part": "ring", "lesson_idx": 5}, {"x": 9.5, "y": 3.7, "char": "Q", "part": "ring", "lesson_idx": 6}, {"x": 11.48, "y": 4.81, "char": "Q", "part": "ring", "lesson_idx": 7}, {"x": 12.0, "y": 11.0, "char": "Q", "part": "tail", "lesson_idx": 0}, {"x": 13.2, "y": 12.5, "char": "Q", "part": "tail", "lesson_idx": 1}, {"x": 16.8, "y": 4.0, "char": "U", "part": "left", "lesson_idx": 2}, {"x": 21.8, "y": 4.0, "char": "U", "part": "right", "lesson_idx": 3}, {"x": 16.8, "y": 6.5, "char": "U", "part": "left", "lesson_idx": 4}, {"x": 21.8, "y": 6.5, "char": "U", "part": "right", "lesson_idx": 5}, {"x": 16.8, "y": 9.0, "char": "U", "part": "left", "lesson_idx": 6}, {"x": 21.8, "y": 9.0, "char": "U", "part": "right", "lesson_idx": 7}, {"x": 17.8, "y": 11.2, "char": "U", "part": "bottom", "lesson_idx": 0}, {"x": 19.3, "y": 11.8, "char": "U", "part": "bottom", "lesson_idx": 1}, {"x": 20.8, "y": 11.2, "char": "U", "part": "bottom", "lesson_idx": 2}, {"x": 25.5, "y": 4.2, "char": "Ỳ", "part": "arm_l", "lesson_idx": 3}, {"x": 26.8, "y": 6.5, "char": "Ỳ", "part": "arm_l", "lesson_idx": 4}, {"x": 30.0, "y": 4.2, "char": "Ỳ", "part": "arm_r", "lesson_idx": 5}, {"x": 29.0, "y": 6.5, "char": "Ỳ", "part": "arm_r", "lesson_idx": 6}, {"x": 28.0, "y": 8.2, "char": "Ỳ", "part": "stem", "lesson_idx": 7}, {"x": 28.0, "y": 10.5, "char": "Ỳ", "part": "stem", "lesson_idx": 0}, {"x": 28.0, "y": 12.5, "char": "Ỳ", "part": "stem", "lesson_idx": 1}, {"x": 26.5, "y": 2.0, "char": "Ỳ", "part": "accent", "lesson_idx": 2}, {"x": 28.0, "y": 3.0, "char": "Ỳ", "part": "accent", "lesson_idx": 3}, {"x": 34.0, "y": 4.0, "char": "N", "part": "left", "lesson_idx": 4}, {"x": 39.2, "y": 4.0, "char": "N", "part": "right", "lesson_idx": 5}, {"x": 34.0, "y": 6.8, "char": "N", "part": "left", "lesson_idx": 6}, {"x": 39.2, "y": 6.8, "char": "N", "part": "right", "lesson_idx": 7}, {"x": 34.0, "y": 9.5, "char": "N", "part": "left", "lesson_idx": 0}, {"x": 39.2, "y": 9.5, "char": "N", "part": "right", "lesson_idx": 1}, {"x": 34.0, "y": 12.2, "char": "N", "part": "left", "lesson_idx": 2}, {"x": 39.2, "y": 12.2, "char": "N", "part": "right", "lesson_idx": 3}, {"x": 35.5, "y": 6.2, "char": "N", "part": "diag", "lesson_idx": 4}, {"x": 37.0, "y": 8.8, "char": "N", "part": "diag", "lesson_idx": 5}, {"x": 38.2, "y": 11.0, "char": "N", "part": "diag", "lesson_idx": 6}, {"x": 43.0, "y": 4.0, "char": "H", "part": "left", "lesson_idx": 7}, {"x": 48.2, "y": 4.0, "char": "H", "part": "right", "lesson_idx": 0}, {"x": 43.0, "y": 6.8, "char": "H", "part": "left", "lesson_idx": 1}, {"x": 48.2, "y": 6.8, "char": "H", "part": "right", "lesson_idx": 2}, {"x": 43.0, "y": 9.5, "char": "H", "part": "left", "lesson_idx": 3}, {"x": 48.2, "y": 9.5, "char": "H", "part": "right", "lesson_idx": 4}, {"x": 43.0, "y": 12.2, "char": "H", "part": "left", "lesson_idx": 5}, {"x": 48.2, "y": 12.2, "char": "H", "part": "right", "lesson_idx": 6}, {"x": 44.8, "y": 8.2, "char": "H", "part": "cross", "lesson_idx": 7}, {"x": 46.5, "y": 8.2, "char": "H", "part": "cross", "lesson_idx": 0}, {"x": 63.0, "y": 3.2, "char": "A", "part": "peak", "lesson_idx": 1}, {"x": 61.2, "y": 5.5, "char": "A", "part": "left", "lesson_idx": 2}, {"x": 59.8, "y": 7.8, "char": "A", "part": "left", "lesson_idx": 3}, {"x": 58.5, "y": 10.2, "char": "A", "part": "left", "lesson_idx": 4}, {"x": 57.2, "y": 12.5, "char": "A", "part": "left", "lesson_idx": 5}, {"x": 64.8, "y": 5.5, "char": "A", "part": "right", "lesson_idx": 6}, {"x": 66.2, "y": 7.8, "char": "A", "part": "right", "lesson_idx": 7}, {"x": 67.5, "y": 10.2, "char": "A", "part": "right", "lesson_idx": 0}, {"x": 68.8, "y": 12.5, "char": "A", "part": "right", "lesson_idx": 1}, {"x": 60.5, "y": 9.0, "char": "A", "part": "cross", "lesson_idx": 2}, {"x": 63.0, "y": 9.0, "char": "A", "part": "cross", "lesson_idx": 3}, {"x": 65.5, "y": 9.0, "char": "A", "part": "cross", "lesson_idx": 4}, {"x": 74.0, "y": 4.0, "char": "N2", "part": "left", "lesson_idx": 5}, {"x": 80.5, "y": 4.0, "char": "N2", "part": "right", "lesson_idx": 6}, {"x": 74.0, "y": 6.8, "char": "N2", "part": "left", "lesson_idx": 7}, {"x": 80.5, "y": 6.8, "char": "N2", "part": "right", "lesson_idx": 0}, {"x": 74.0, "y": 9.5, "char": "N2", "part": "left", "lesson_idx": 1}, {"x": 80.5, "y": 9.5, "char": "N2", "part": "right", "lesson_idx": 2}, {"x": 74.0, "y": 12.2, "char": "N2", "part": "left", "lesson_idx": 3}, {"x": 80.5, "y": 12.2, "char": "N2", "part": "right", "lesson_idx": 4}, {"x": 75.8, "y": 6.2, "char": "N2", "part": "diag", "lesson_idx": 5}, {"x": 77.5, "y": 8.8, "char": "N2", "part": "diag", "lesson_idx": 6}, {"x": 79.0, "y": 11.0, "char": "N2", "part": "diag", "lesson_idx": 7}];
     const defaultCandles = [{"id": 1, "sender": "Cha Trên Trời & Lời Hứa 6000 Năm", "message": "Con cái Đức Chúa Trời là điều tuyệt vời nhất mà Cha tìm kiếm suốt 6000 năm. Chúc mừng sinh nhật ái nữ Quỳnh An!", "time": "16/09"}, {"id": 2, "sender": "Nguyện Ước Ân Điển", "message": "Tuổi mới xin Cha ban cho chị thêm đức tin son sắt, sự thấu hiểu dư dật và ân điển dư dật mọi lúc và bằng mọi cách!", "time": "16/09"}, {"id": 3, "sender": "Nguyện Ước Đắc Thắng", "message": "Chúc chị luôn kiên định trong giao ước, tâm hồn bình an, chiến thắng bản thân mỗi ngày và gặt hái muôn trái ngọt vinh quang!", "time": "16/09"}];
 
-    let allCandles = [];
-
     // Render Sky Constellation directly in the sky portion of the portrait
     function renderSkyConstellation() {
       const skyBox = document.getElementById('skyConstellation');
@@ -767,35 +838,308 @@
       });
     }
 
-    // Initialize & render candles on the cake
-    function initCandles() {
-      let localCandles = [];
-      try {
-        localCandles = JSON.parse(localStorage.getItem('quynh_an_cake_candles') || '[]');
-      } catch(e) { localCandles = []; }
+    /* =========================================================================
+     * HYBRID STORAGE SYSTEM (CLOUD DATABASE + LOCALSTORAGE FALLBACK)
+     * ========================================================================= */
+    const CLOUD_CONFIG = {
+      // Storage Provider: 'firebase' | 'sheets' | 'custom' | 'mock'
+      provider: 'firebase',
 
-      allCandles = [...defaultCandles, ...localCandles];
-      renderAllCandles();
+      // 1. Google Firebase Realtime Database REST URL (Zero server, 100% free)
+      // Cấu hình: Thay thế URL Firebase của bạn vào đây nếu cần
+      firebaseUrl: 'https://quynh-an-birthday-default-rtdb.firebaseio.com',
+
+      // 2. Google Sheets via Google Apps Script Web App (Tùy chọn thay thế nếu lưu vào Google Sheet)
+      googleAppsScriptUrl: '',
+
+      // Chu kỳ tự động kiểm tra và làm mới (Polling): 12000ms = 12 giây (đáp ứng 10-15 giây)
+      pollingIntervalMs: 12000,
+
+      // Khóa lưu trữ cục bộ LocalStorage
+      storageKey: 'quynh_an_cake_candles_v2',
+
+      // Thời gian timeout tối đa cho mỗi request mạng (ms)
+      timeoutMs: 6500
+    };
+
+    let allCandles = [];
+    let isSyncing = false;
+    let pollingIntervalTimer = null;
+    const knownCandleKeys = new Set();
+
+    // Utility: Fetch với AbortController timeout an toàn
+    async function fetchWithTimeout(resource, options = {}) {
+      const { timeout = CLOUD_CONFIG.timeoutMs } = options;
+      const controller = new AbortController();
+      const timerId = setTimeout(() => controller.abort(), timeout);
+      try {
+        const response = await fetch(resource, {
+          ...options,
+          signal: controller.signal
+        });
+        clearTimeout(timerId);
+        return response;
+      } catch (err) {
+        clearTimeout(timerId);
+        throw err;
+      }
     }
 
+    // Tạo key định danh duy nhất cho ngọn nến
+    function getCandleKey(c) {
+      if (c.id) return String(c.id);
+      return `${c.sender}_${c.message}_${c.time}`;
+    }
+
+    // Khử trùng lặp danh sách nến
+    function deduplicateCandles(list) {
+      const seen = new Set();
+      const result = [];
+      for (const item of list) {
+        if (!item) continue;
+        const key = getCandleKey(item);
+        if (!seen.has(key)) {
+          seen.add(key);
+          result.push(item);
+        }
+      }
+      return result;
+    }
+
+    // LocalStorage Get/Set
+    function getLocalCandles() {
+      try {
+        return JSON.parse(localStorage.getItem(CLOUD_CONFIG.storageKey) || '[]');
+      } catch (e) {
+        console.warn('LocalStorage error:', e);
+        return [];
+      }
+    }
+
+    function saveLocalCandles(candles) {
+      try {
+        localStorage.setItem(CLOUD_CONFIG.storageKey, JSON.stringify(candles));
+      } catch (e) {
+        console.warn('LocalStorage save error:', e);
+      }
+    }
+
+    // Cập nhật trạng thái Chip đồng bộ Cloud trên giao diện
+    function updateSyncBadge(state, text) {
+      const dot = document.getElementById('syncDot');
+      const label = document.getElementById('syncStatusText');
+      if (!dot || !label) return;
+
+      dot.className = 'sync-dot ' + (state || 'online');
+      label.innerText = text || 'Đồng bộ đám mây: Trực tuyến';
+    }
+
+    // Hiển thị thông báo nổi Toast khi có nến mới hoặc trạng thái gửi
+    function showLiveToast(msg, duration = 4000) {
+      const toast = document.getElementById('candleLiveToast');
+      const text = document.getElementById('candleToastText');
+      if (!toast || !text) return;
+      text.innerText = msg;
+      toast.classList.add('show');
+      clearTimeout(toast._timer);
+      toast._timer = setTimeout(() => {
+        toast.classList.remove('show');
+      }, duration);
+    }
+
+    // Cloud Provider: Đọc tất cả nến từ Cloud Database
+    async function fetchFromCloud() {
+      if (CLOUD_CONFIG.provider === 'firebase' && CLOUD_CONFIG.firebaseUrl) {
+        const endpoint = `${CLOUD_CONFIG.firebaseUrl.replace(/\/+$/, '')}/candles.json`;
+        const res = await fetchWithTimeout(endpoint, { method: 'GET' });
+        if (!res.ok) throw new Error(`Firebase GET status ${res.status}`);
+        const data = await res.json();
+        if (!data) return [];
+        return Object.keys(data).map(k => ({
+          ...data[k],
+          cloudKey: k
+        }));
+      } else if (CLOUD_CONFIG.provider === 'sheets' && CLOUD_CONFIG.googleAppsScriptUrl) {
+        const res = await fetchWithTimeout(`${CLOUD_CONFIG.googleAppsScriptUrl}?action=get`, { method: 'GET' });
+        if (!res.ok) throw new Error(`Sheets GET status ${res.status}`);
+        const data = await res.json();
+        return Array.isArray(data) ? data : (data.candles || []);
+      }
+      return [];
+    }
+
+    // Cloud Provider: Ghi nến mới lên Cloud Database
+    async function pushToCloud(candle) {
+      if (CLOUD_CONFIG.provider === 'firebase' && CLOUD_CONFIG.firebaseUrl) {
+        const endpoint = `${CLOUD_CONFIG.firebaseUrl.replace(/\/+$/, '')}/candles.json`;
+        const res = await fetchWithTimeout(endpoint, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(candle)
+        });
+        if (!res.ok) throw new Error(`Firebase POST status ${res.status}`);
+        return await res.json();
+      } else if (CLOUD_CONFIG.provider === 'sheets' && CLOUD_CONFIG.googleAppsScriptUrl) {
+        const res = await fetchWithTimeout(CLOUD_CONFIG.googleAppsScriptUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify(candle)
+        });
+        if (!res.ok) throw new Error(`Sheets POST status ${res.status}`);
+        return await res.json();
+      }
+      return { success: true, localOnly: true };
+    }
+
+    // Tính toán tọa độ đặt nến thông minh đa tầng trên bánh kem
+    function getCandlePosition(index, total) {
+      if (total <= 6) {
+        // Tầng 1 đỉnh bánh (Top Tier)
+        const left = total > 1 ? 43.5 + (index * (15.0 / (total - 1))) : 51.0;
+        const top = 51.5 + ((index % 2 === 0) ? -0.7 : 0.7);
+        return { left, top };
+      }
+      if (index < 6) {
+        // Tầng 1: 6 nến đầu tiên
+        const left = 44.0 + (index * (14.0 / 5));
+        const top = 51.2 + ((index % 2 === 0) ? -0.6 : 0.6);
+        return { left, top };
+      } else if (index < 16) {
+        // Tầng 2: các nến từ 7 đến 16 (Middle Tier)
+        const tierIdx = index - 6;
+        const tierCount = Math.min(10, total - 6);
+        const left = tierCount > 1 ? 41.0 + (tierIdx * (20.0 / (tierCount - 1))) : 51.0;
+        const top = 57.2 + ((tierIdx % 2 === 0) ? -0.8 : 0.8);
+        return { left, top };
+      } else {
+        // Tầng 3: các nến 17+ (Lower Tier)
+        const tierIdx = index - 16;
+        const tierCount = total - 16;
+        const rawLeft = tierCount > 1 ? 38.5 + (tierIdx * (25.0 / (tierCount - 1))) : 51.0;
+        // Tránh che nút (+) ở giữa (left ~53.5%)
+        const left = (rawLeft >= 51.0 && rawLeft <= 55.0) ? rawLeft + (tierIdx % 2 === 0 ? -3.5 : 3.5) : rawLeft;
+        const top = 63.2 + ((tierIdx % 2 === 0) ? -0.6 : 0.6);
+        return { left, top };
+      }
+    }
+
+    // Khởi tạo hệ thống lưu trữ Hybrid
+    async function initCandles() {
+      // 1. Giai đoạn 1: Đọc nhanh từ LocalStorage + DefaultCandles (0ms, không chờ đợi)
+      const local = getLocalCandles();
+      allCandles = deduplicateCandles([...defaultCandles, ...local]);
+      allCandles.forEach(c => knownCandleKeys.add(getCandleKey(c)));
+      renderAllCandles();
+
+      // 2. Giai đoạn 2: Tải dữ liệu đám mây & khởi chạy Polling
+      await syncCandlesLoop();
+      startPolling();
+    }
+
+    // Bắt đầu vòng lặp polling mỗi 12 giây (trong dải 10-15 giây)
+    function startPolling() {
+      if (pollingIntervalTimer) clearInterval(pollingIntervalTimer);
+      pollingIntervalTimer = setInterval(() => {
+        syncCandlesLoop();
+      }, CLOUD_CONFIG.pollingIntervalMs);
+    }
+
+    // Đẩy các lời chúc cục bộ chưa được sync lên Cloud
+    async function flushUnsyncedCandles() {
+      const local = getLocalCandles();
+      const unsynced = local.filter(c => c && c.synced === false);
+      if (unsynced.length === 0) return;
+
+      for (const item of unsynced) {
+        try {
+          await pushToCloud(item);
+          item.synced = true;
+        } catch (e) {
+          console.warn('Chưa thể đồng bộ nến ngoại tuyến:', item.id, e);
+        }
+      }
+      saveLocalCandles(local);
+    }
+
+    // Vòng lặp đồng bộ định kỳ (Polling Engine)
+    async function syncCandlesLoop() {
+      if (isSyncing) return;
+      if (document.hidden) return; // Tiết kiệm pin & data khi tab đang ẩn
+
+      isSyncing = true;
+      try {
+        // Bước 1: Flush nến offline còn sót
+        await flushUnsyncedCandles();
+
+        // Bước 2: Tải danh sách mới nhất từ Cloud
+        const cloudItems = await fetchFromCloud();
+
+        if (cloudItems && cloudItems.length > 0) {
+          // Phát hiện ngọn nến mới từ những người bạn khác gửi đến từ xa!
+          const remoteNewArrivals = [];
+          for (const item of cloudItems) {
+            const key = getCandleKey(item);
+            if (!knownCandleKeys.has(key)) {
+              remoteNewArrivals.push(item);
+            }
+          }
+
+          if (remoteNewArrivals.length > 0) {
+            console.log(`[HybridStorage] Đã nhận ${remoteNewArrivals.length} ngọn nến mới từ xa!`);
+
+            const local = getLocalCandles();
+            allCandles = deduplicateCandles([...defaultCandles, ...local, ...cloudItems]);
+            allCandles.forEach(c => knownCandleKeys.add(getCandleKey(c)));
+
+            // Lưu bản sao dự phòng toàn bộ lời chúc vào LocalStorage
+            saveLocalCandles(allCandles.filter(c => !defaultCandles.some(d => d.id === c.id)));
+
+            // Cập nhật giao diện mượt mà
+            renderAllCandles();
+
+            // Hiển thị Toast thông báo và bắn pháo hoa chào mừng ngọn nến mới!
+            const firstSender = remoteNewArrivals[0].sender || 'Một người bạn';
+            if (remoteNewArrivals.length === 1) {
+              showLiveToast(`🕯️ ${firstSender} vừa thắp thêm một ngọn nến mừng sinh nhật Quỳnh An!`);
+            } else {
+              showLiveToast(`🕯️ Có ${remoteNewArrivals.length} ngọn nến mới từ xa vừa được thắp sáng trên bánh kem!`);
+            }
+
+            confetti({
+              particleCount: 50,
+              spread: 70,
+              origin: { y: 0.55 }
+            });
+          }
+        }
+        updateSyncBadge('online', 'Đồng bộ đám mây: Trực tuyến');
+      } catch (err) {
+        console.warn('[HybridStorage] Kết nối đám mây tạm gián đoạn:', err.message);
+        updateSyncBadge('offline', 'Ngoại tuyến: Đang dùng dữ liệu đã lưu');
+      } finally {
+        isSyncing = false;
+      }
+    }
+
+    // Hiển thị tất cả ngọn nến lên Bánh Kem và Bức Tường Lời Chúc
     function renderAllCandles() {
       const cakeContainer = document.getElementById('cakeLayerOverlay');
       const wallContainer = document.getElementById('candlesGrid');
+      if (!cakeContainer || !wallContainer) return;
+
       cakeContainer.innerHTML = '';
       wallContainer.innerHTML = '';
 
       const count = allCandles.length;
       allCandles.forEach((c, i) => {
-        // Spread evenly on the top tier of cake (X: 43%..58%, Y: 51%..53%)
-        const leftPercent = count > 1 ? 43.5 + (i * (15.0 / (count - 1))) : 50.5;
-        const topPercent = 51.5 + ((i % 2 === 0) ? -0.8 : 0.8);
+        const pos = getCandlePosition(i, count);
 
-        // 1. Candle on the cake
+        // 1. Ngọn nến lung linh trên bánh kem
         const candleSpot = document.createElement('div');
         candleSpot.className = 'cake-candle-spot';
-        candleSpot.style.left = leftPercent + '%';
-        candleSpot.style.top = topPercent + '%';
-        candleSpot.title = `Nến của ${c.sender}: Nhấp để xem lời chúc`;
+        candleSpot.style.left = pos.left + '%';
+        candleSpot.style.top = pos.top + '%';
+        candleSpot.title = `Nến của ${c.sender}: Chạm để xem lời chúc`;
         candleSpot.innerHTML = `
           <div class="cake-candle-flame"></div>
           <div class="cake-candle-wick"></div>
@@ -804,7 +1148,7 @@
         candleSpot.onclick = () => showCandleDetail(c);
         cakeContainer.appendChild(candleSpot);
 
-        // 2. Card in bottom list
+        // 2. Thẻ lời chúc ở danh sách phía dưới
         const card = document.createElement('div');
         card.className = 'candle-card';
         card.innerHTML = `
@@ -815,7 +1159,7 @@
           </div>
           <div class="candle-sender">🕯️ ${c.sender}</div>
           <div class="candle-wish-text">“${c.message}”</div>
-          <div class="candle-time">${c.time}</div>
+          <div class="candle-time">${c.time || '16/09'}</div>
         `;
         card.onclick = () => showCandleDetail(c);
         wallContainer.appendChild(card);
@@ -825,7 +1169,7 @@
     function showCandleDetail(candle) {
       document.getElementById('detailSender').innerText = '🕯️ Lời Chúc Từ: ' + candle.sender;
       document.getElementById('detailMessage').innerText = '“' + candle.message + '”';
-      document.getElementById('detailTime').innerText = '✨ Thắp sáng ngày: ' + candle.time;
+      document.getElementById('detailTime').innerText = '✨ Thắp sáng ngày: ' + (candle.time || '16/09');
       document.getElementById('candleDetailModal').classList.add('active');
 
       confetti({ particleCount: 40, spread: 60, origin: { y: 0.5 } });
@@ -837,46 +1181,77 @@
 
     function openCandleModal() {
       document.getElementById('candleModal').classList.add('active');
+      setTimeout(() => {
+        const inp = document.getElementById('candleSender');
+        if (inp) inp.focus();
+      }, 150);
     }
 
     function closeCandleModal() {
       document.getElementById('candleModal').classList.remove('active');
     }
 
-    function submitCandleWish() {
-      const sender = document.getElementById('candleSender').value.trim() || 'Người bạn thân yêu';
-      const msg = document.getElementById('candleMessage').value.trim();
+    // Xử lý khi người dùng bấm gửi lời chúc & thắp nến (Dual Write)
+    async function submitCandleWish() {
+      const senderInput = document.getElementById('candleSender');
+      const messageInput = document.getElementById('candleMessage');
+      const sender = senderInput.value.trim() || 'Người bạn thân yêu';
+      const msg = messageInput.value.trim();
+
       if (!msg) {
         alert('Xin hãy nhập lời chúc trước khi thắp nến lên bánh nhé!');
         return;
       }
 
+      // Tạo object ngọn nến với ID duy nhất & mốc thời gian
       const newCandle = {
-        id: Date.now(),
+        id: 'candle_' + Date.now() + '_' + Math.random().toString(36).substring(2, 6),
         sender: sender,
         message: msg,
-        time: new Date().toLocaleDateString('vi-VN')
+        time: new Date().toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit' }),
+        timestamp: Date.now(),
+        synced: false
       };
 
-      let localCandles = [];
-      try {
-        localCandles = JSON.parse(localStorage.getItem('quynh_an_cake_candles') || '[]');
-      } catch(e) { localCandles = []; }
-
-      localCandles.push(newCandle);
-      localStorage.setItem('quynh_an_cake_candles', JSON.stringify(localCandles));
+      // BƯỚC 1: GHI NGAY VÀO LOCALSTORAGE (0ms Latency, Optimistic UI)
+      const local = getLocalCandles();
+      local.push(newCandle);
+      saveLocalCandles(local);
 
       allCandles.push(newCandle);
+      knownCandleKeys.add(getCandleKey(newCandle));
       renderAllCandles();
 
-      document.getElementById('candleMessage').value = '';
+      messageInput.value = '';
       closeCandleModal();
 
+      // Pháo hoa rực rỡ ăn mừng thắp nến thành công
       confetti({
         particleCount: 120,
         spread: 90,
         origin: { y: 0.55 }
       });
+
+      showLiveToast(`🕯️ Bạn đã thắp nến thành công! Đang lưu lên đám mây...`);
+
+      // BƯỚC 2: GHI BẤT ĐỒNG BỘ LÊN CLOUD DATABASE
+      try {
+        updateSyncBadge('syncing', 'Đang tải lời chúc lên đám mây...');
+        await pushToCloud(newCandle);
+
+        // Đánh dấu đã sync thành công trong LocalStorage
+        newCandle.synced = true;
+        const currentLocal = getLocalCandles();
+        const updatedLocal = currentLocal.map(c => c.id === newCandle.id ? { ...c, synced: true } : c);
+        saveLocalCandles(updatedLocal);
+
+        updateSyncBadge('online', 'Đồng bộ đám mây: Trực tuyến');
+        showLiveToast(`✨ Lời chúc của bạn đã được lưu lên đám mây để mọi người cùng thấy!`);
+      } catch (err) {
+        console.warn('Lưu đám mây tạm thời chưa thành công (sẽ tự động thử lại khi có mạng):', err);
+        updateSyncBadge('offline', 'Ngoại tuyến: Đã lưu trên máy của bạn');
+        showLiveToast(`🕯️ Lời chúc đã lưu an toàn trên máy bạn và sẽ tự động đồng bộ khi có mạng.`);
+      }
     }
 
     function openLesson(index) {
@@ -910,9 +1285,30 @@
       initCandles();
     });
 
+    window.addEventListener('online', () => {
+      updateSyncBadge('syncing', 'Đã có mạng trở lại! Đang đồng bộ...');
+      syncCandlesLoop();
+    });
+
+    window.addEventListener('offline', () => {
+      updateSyncBadge('offline', 'Mất kết nối mạng • Chế độ ngoại tuyến');
+    });
+
+    document.addEventListener('visibilitychange', () => {
+      if (!document.hidden) {
+        syncCandlesLoop();
+      }
+    });
+
     window.addEventListener('resize', () => {
       renderSkyConstellation();
     });
   </script>
+
+  <!-- Live Toast Notification for Incoming Remote Candles -->
+  <div id="candleLiveToast" class="candle-live-toast">
+    <span class="toast-icon">🕯️</span>
+    <span id="candleToastText">Có ngọn nến mới vừa được thắp sáng!</span>
+  </div>
 </body>
 </html>
