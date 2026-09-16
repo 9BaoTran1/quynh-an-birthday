@@ -845,25 +845,20 @@
      * HYBRID STORAGE SYSTEM (CLOUD DATABASE + LOCALSTORAGE FALLBACK)
      * ========================================================================= */
     const CLOUD_CONFIG = {
-      // Nhà cung cấp lưu trữ đám mây hoạt động ngay lập tức (100% Free, CORS toàn cầu):
-      provider: 'extendsclass', // 'extendsclass' | 'firebase' | 'sheets'
-      
-      // Cloud JSON Storage Bin (Đã khởi tạo và hoạt động trực tiếp trên toàn cầu):
-      extendsClassUrl: 'https://extendsclass.com/api/json-storage/bin/cacdeca',
+      // Sử dụng Google Firebase Realtime Database (Serverless, Realtime 100%, CORS mở toàn cầu):
+      provider: 'firebase',
 
-      // Tùy chọn Firebase Realtime DB (nếu muốn chuyển sang Firebase riêng):
-      firebaseUrl: 'https://quynh-an-birthday-default-rtdb.firebaseio.com',
+      // Cơ sở dữ liệu Firebase Realtime Database Singapore (asia-southeast1) hoạt động trực tiếp:
+      firebaseUrl: 'https://lophocchibi-405e5-default-rtdb.asia-southeast1.firebasedatabase.app',
+      firebasePath: 'quynh_an_wishes',
 
-      // Tùy chọn Google Sheets via Google Apps Script:
-      googleAppsScriptUrl: '',
-
-      // Chu kỳ tự động kiểm tra và cập nhật nến mới từ bạn bè (12 giây)
-      pollingIntervalMs: 12000,
+      // Chu kỳ tự động kiểm tra nến mới từ bạn bè (mỗi 10 giây)
+      pollingIntervalMs: 10000,
 
       // Khóa lưu trữ an toàn đa tầng trên thiết bị
       storageKey: 'quynh_an_cake_candles_v2',
 
-      // Thời gian timeout tối đa cho mỗi request mạng (ms)
+      // Timeout mạng (ms)
       timeoutMs: 6500
     };
 
@@ -954,13 +949,9 @@
 
     // Cloud Provider: Đọc tất cả nến từ Cloud Database
     async function fetchFromCloud() {
-      if (CLOUD_CONFIG.provider === 'extendsclass' && CLOUD_CONFIG.extendsClassUrl) {
-        const res = await fetchWithTimeout(CLOUD_CONFIG.extendsClassUrl, { method: 'GET' });
-        if (!res.ok) throw new Error(`ExtendsClass GET status ${res.status}`);
-        const data = await res.json();
-        return Array.isArray(data.wishes) ? data.wishes : [];
-      } else if (CLOUD_CONFIG.provider === 'firebase' && CLOUD_CONFIG.firebaseUrl) {
-        const endpoint = `${CLOUD_CONFIG.firebaseUrl.replace(/\/+$/, '')}/candles.json`;
+      if (CLOUD_CONFIG.provider === 'firebase' && CLOUD_CONFIG.firebaseUrl) {
+        const path = CLOUD_CONFIG.firebasePath || 'candles';
+        const endpoint = `${CLOUD_CONFIG.firebaseUrl.replace(/\/+$/, '')}/${path}.json`;
         const res = await fetchWithTimeout(endpoint, { method: 'GET' });
         if (!res.ok) throw new Error(`Firebase GET status ${res.status}`);
         const data = await res.json();
@@ -980,31 +971,9 @@
 
     // Cloud Provider: Ghi nến mới lên Cloud Database
     async function pushToCloud(candle) {
-      if (CLOUD_CONFIG.provider === 'extendsclass' && CLOUD_CONFIG.extendsClassUrl) {
-        // Đọc danh sách hiện tại từ Cloud
-        let currentWishes = [];
-        try {
-          const resGet = await fetchWithTimeout(CLOUD_CONFIG.extendsClassUrl, { method: 'GET' });
-          if (resGet.ok) {
-            const currentData = await resGet.json();
-            currentWishes = Array.isArray(currentData.wishes) ? currentData.wishes : [];
-          }
-        } catch (e) { currentWishes = []; }
-
-        // Append nếu chưa tồn tại
-        if (!currentWishes.some(w => String(w.id) === String(candle.id))) {
-          currentWishes.push(candle);
-        }
-
-        const resPut = await fetchWithTimeout(CLOUD_CONFIG.extendsClassUrl, {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ wishes: currentWishes })
-        });
-        if (!resPut.ok) throw new Error(`ExtendsClass PUT status ${resPut.status}`);
-        return await resPut.json();
-      } else if (CLOUD_CONFIG.provider === 'firebase' && CLOUD_CONFIG.firebaseUrl) {
-        const endpoint = `${CLOUD_CONFIG.firebaseUrl.replace(/\/+$/, '')}/candles.json`;
+      if (CLOUD_CONFIG.provider === 'firebase' && CLOUD_CONFIG.firebaseUrl) {
+        const path = CLOUD_CONFIG.firebasePath || 'candles';
+        const endpoint = `${CLOUD_CONFIG.firebaseUrl.replace(/\/+$/, '')}/${path}.json`;
         const res = await fetchWithTimeout(endpoint, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
