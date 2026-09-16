@@ -6,7 +6,7 @@
   <title>Chúc Mừng Sinh Nhật Quỳnh An • 16/9</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,400&family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
@@ -190,7 +190,7 @@
 
     /* Constellation Stage - Chòm sao chữ QUỲNH AN */
     .constellation-section {
-      margin-top: 45px;
+      margin-top: 40px;
       background: rgba(14, 21, 38, 0.7);
       border: 1.5px solid rgba(255, 215, 0, 0.35);
       border-radius: 24px;
@@ -201,7 +201,7 @@
 
     .constellation-title {
       font-family: 'Playfair Display', serif;
-      font-size: 1.7rem;
+      font-size: 1.65rem;
       color: #ffd700;
       margin-bottom: 8px;
     }
@@ -224,7 +224,6 @@
       overflow: hidden;
     }
 
-    /* Individual constellation star */
     .const-star {
       position: absolute;
       transform: translate(-50%, -50%);
@@ -243,23 +242,159 @@
       transition: all 0.25s ease;
     }
 
-    .const-star:hover {
-      z-index: 20;
-    }
-
     .const-star:hover .const-star-dot {
       transform: scale(2.2);
-      background: #ffffff;
       box-shadow: 0 0 14px 6px #ffffff, 0 0 25px 8px #ffd700;
     }
 
-    /* Star lines canvas */
     #linesCanvas {
       position: absolute;
       top: 0; left: 0;
       width: 100%; height: 100%;
       pointer-events: none;
       z-index: 2;
+    }
+
+    /* Candles Of Blessing Section */
+    .candles-section {
+      margin-top: 45px;
+      background: linear-gradient(135deg, rgba(20, 28, 50, 0.75) 0%, rgba(10, 15, 30, 0.9) 100%);
+      border: 1.5px solid rgba(255, 215, 0, 0.35);
+      border-radius: 24px;
+      padding: 35px 24px;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(10px);
+    }
+
+    .candles-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.7rem;
+      color: #ffd700;
+      margin-bottom: 8px;
+    }
+
+    .candles-subtitle {
+      color: #b8cbe8;
+      font-size: 0.92rem;
+      margin-bottom: 25px;
+      line-height: 1.6;
+    }
+
+    .add-candle-btn {
+      background: linear-gradient(135deg, #ffd700 0%, #ff8c00 100%);
+      color: #0b111e;
+      border: none;
+      font-weight: 700;
+      font-size: 1rem;
+      padding: 13px 30px;
+      border-radius: 50px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      box-shadow: 0 6px 20px rgba(255, 140, 0, 0.4);
+      transition: all 0.3s ease;
+      margin-bottom: 30px;
+    }
+    .add-candle-btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 10px 30px rgba(255, 215, 0, 0.6);
+    }
+
+    .candles-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+      text-align: left;
+    }
+
+    .candle-card {
+      background: rgba(22, 32, 58, 0.7);
+      border: 1px solid rgba(255, 215, 0, 0.3);
+      border-radius: 18px;
+      padding: 20px;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+    }
+    .candle-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 12px 30px rgba(255, 215, 0, 0.25);
+      border-color: #ffd700;
+    }
+
+    /* Animated Candle Graphic */
+    .candle-figure {
+      width: 40px;
+      height: 70px;
+      position: relative;
+      margin-bottom: 15px;
+    }
+
+    .candle-flame {
+      position: absolute;
+      top: -5px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 14px;
+      height: 24px;
+      background: radial-gradient(ellipse at bottom, #ffffff 10%, #ffd700 45%, #ff4500 85%);
+      border-radius: 50% 50% 35% 35%;
+      box-shadow: 0 0 16px 6px rgba(255, 215, 0, 0.7), 0 0 30px 10px rgba(255, 120, 0, 0.4);
+      animation: flicker 1.5s infinite alternate ease-in-out;
+    }
+
+    @keyframes flicker {
+      0% { transform: translateX(-50%) scale(1) rotate(-1deg); opacity: 0.95; }
+      50% { transform: translateX(-50%) scale(1.1, 0.95) rotate(2deg); opacity: 1; }
+      100% { transform: translateX(-50%) scale(0.95, 1.1) rotate(-2deg); opacity: 0.9; }
+    }
+
+    .candle-wick {
+      position: absolute;
+      top: 14px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 2px;
+      height: 8px;
+      background: #442211;
+    }
+
+    .candle-body {
+      position: absolute;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 22px;
+      height: 48px;
+      background: linear-gradient(to right, #ffd89b, #ffe8bf, #f8b042);
+      border-radius: 4px 4px 6px 6px;
+      box-shadow: inset -2px 0 4px rgba(0,0,0,0.2);
+    }
+
+    .candle-sender {
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: #ffd700;
+      margin-bottom: 8px;
+      letter-spacing: 0.5px;
+    }
+
+    .candle-wish-text {
+      font-size: 0.92rem;
+      color: #e5eeff;
+      line-height: 1.6;
+      font-style: italic;
+    }
+
+    .candle-time {
+      font-size: 0.72rem;
+      color: #7b8fae;
+      margin-top: 10px;
     }
 
     /* Lesson Modal */
@@ -359,6 +494,43 @@
       line-height: 1.7;
     }
 
+    /* Light Candle Form */
+    .candle-form-group {
+      margin-top: 15px;
+    }
+    .candle-form-group input, .candle-form-group textarea {
+      width: 100%;
+      background: rgba(8, 14, 28, 0.85);
+      border: 1px solid rgba(255, 215, 0, 0.4);
+      border-radius: 12px;
+      padding: 12px 16px;
+      color: #fff;
+      font-family: inherit;
+      font-size: 0.95rem;
+      margin-bottom: 14px;
+      outline: none;
+    }
+    .candle-form-group input:focus, .candle-form-group textarea:focus {
+      border-color: #ffd700;
+      box-shadow: 0 0 12px rgba(255, 215, 0, 0.35);
+    }
+
+    .light-btn-submit {
+      background: linear-gradient(135deg, #ffd700 0%, #ff8c00 100%);
+      color: #0c1222;
+      border: none;
+      font-weight: 700;
+      padding: 12px 30px;
+      border-radius: 40px;
+      cursor: pointer;
+      font-size: 0.95rem;
+      box-shadow: 0 4px 15px rgba(255, 140, 0, 0.4);
+      transition: all 0.2s;
+    }
+    .light-btn-submit:hover {
+      transform: scale(1.04);
+    }
+
     footer {
       margin-top: 60px;
       color: #63779c;
@@ -424,17 +596,66 @@
     </div>
 
     <div class="sparkle-hint">
-      <span>✨ Chạm vào đốm sáng trên gương mặt hoặc các ngôi sao xếp thành chữ QUỲNH AN bên dưới ✨</span>
+      <span>✨ Chạm vào đốm sáng trên gương mặt hoặc các ngôi sao chữ QUỲNH AN bên dưới ✨</span>
     </div>
 
     <!-- Constellation Section: Stars Form 'QUỲNH AN' -->
     <div class="constellation-section">
       <div class="constellation-title">✦ Chòm Sao Lấp Lánh: QUỲNH AN ✦</div>
-      <div class="constellation-subtitle">Các ngôi sao được sắp xếp tạo thành tên <strong>QUỲNH AN</strong>. Nhấp vào từng ngôi sao để mở bài học tương ứng từ Lịch sử 6000 năm!</div>
+      <div class="constellation-subtitle">Các ngôi sao xếp thành tên <strong>QUỲNH AN</strong>. Nhấp vào từng ngôi sao để mở bài học tương ứng trích dẫn nguyên văn từ Lịch sử 6000 năm!</div>
 
       <div class="constellation-canvas-box" id="constellationBox">
         <canvas id="linesCanvas"></canvas>
-        <!-- Stars injected via JS -->
+      </div>
+    </div>
+
+    <!-- Candles Of Blessing Section: Ngọn Nến Lời Chúc Của Mọi Người -->
+    <div class="candles-section">
+      <div class="candles-title">🕯️ Thắp Nến Chúc Mừng Sinh Nhật Quỳnh An 🕯️</div>
+      <div class="candles-subtitle">
+        Mỗi ngọn nến được thắp lên là một lời chúc ấm áp, chân thành gửi trao đến chị Quỳnh An.<br>
+        Hãy bấm nút bên dưới để thắp sáng thêm ngọn nến lời chúc của bạn nhé!
+      </div>
+
+      <button class="add-candle-btn" onclick="openCandleModal()">
+        <span>🕯️ Thắp Sáng Ngọn Nến Lời Chúc Của Bạn</span>
+      </button>
+
+      <!-- Candles Grid Container -->
+      <div class="candles-grid" id="candlesGrid">
+        <!-- Built-in opening candles -->
+        <div class="candle-card">
+          <div class="candle-figure">
+            <div class="candle-flame"></div>
+            <div class="candle-wick"></div>
+            <div class="candle-body"></div>
+          </div>
+          <div class="candle-sender">🕯️ Lời Chúc Khởi Nguyên</div>
+          <div class="candle-wish-text">“Con cái Đức Chúa Trời là điều tuyệt vời nhất mà Cha tìm kiếm suốt 6000 năm. Chúc mừng sinh nhật chị Quỳnh An!”</div>
+          <div class="candle-time">16 Tháng 9</div>
+        </div>
+
+        <div class="candle-card">
+          <div class="candle-figure">
+            <div class="candle-flame"></div>
+            <div class="candle-wick"></div>
+            <div class="candle-body"></div>
+          </div>
+          <div class="candle-sender">🕯️ Nguyện Ước Ân Điển</div>
+          <div class="candle-wish-text">“Tuổi mới xin Cha ban cho chị thêm đức tin, sự thấu hiểu dư dật và ân điển dư dật mọi lúc và bằng mọi cách!”</div>
+          <div class="candle-time">16 Tháng 9</div>
+        </div>
+
+        <div class="candle-card">
+          <div class="candle-figure">
+            <div class="candle-flame"></div>
+            <div class="candle-wick"></div>
+            <div class="candle-body"></div>
+          </div>
+          <div class="candle-sender">🕯️ Nguyện Ước Đắc Thắng</div>
+          <div class="candle-wish-text">“Chúc chị luôn vững vàng trong giao ước, tâm hồn bình an, chiến thắng bản thân mỗi ngày và gặt hái muôn trái ngọt!”</div>
+          <div class="candle-time">16 Tháng 9</div>
+        </div>
       </div>
     </div>
 
@@ -456,6 +677,20 @@
     </div>
   </div>
 
+  <!-- Add Candle Modal -->
+  <div class="modal-overlay" id="candleModal">
+    <div class="modal-card">
+      <button class="modal-close" onclick="closeCandleModal()">&times;</button>
+      <div class="modal-era">✦ Thắp Nến Nguyện Ước ✦</div>
+      <div class="modal-title">Gửi Ngọn Nến Lời Chúc Đến Quỳnh An</div>
+      <div class="candle-form-group">
+        <input type="text" id="candleSender" placeholder="Tên của bạn (VD: Người em, Bạn thân...)...">
+        <textarea id="candleMessage" rows="4" placeholder="Viết lời chúc sinh nhật ấm áp gửi tới chị Quỳnh An..."></textarea>
+      </div>
+      <button class="light-btn-submit" onclick="submitCandleWish()">🔥 Thắp Nến & Gửi Lời Chúc</button>
+    </div>
+  </div>
+
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
   <script>
     const lessonsData = [{"star_name": "⭐ Ngôi Sao 1: Ý Muốn Của ĐTH", "era": "Trang 4 • Ý Muốn Của Đấng Tạo Hóa", "exact_quote": "6000 năm trước, 6000 năm sau ở thời đại ngày nay vẫn thế, trời đất qua đi, muôn vật thay đổi nhưng tấm lòng của ĐCT chưa bao giờ thay đổi, rất yêu trái đất muôn vật và cả con người. Đấng Tạo Hóa là cội nguồn của Sự Sống, cội nguồn của Phước Lành.", "lesson_content": "Ý muốn của ĐTH suốt 6000 năm qua là cùng chung sống với con người, ban cho sự sống đời đời, hạnh phúc và mọi phước lành. Đây là mục đích cuối cùng của Đức Chúa Trời."}, {"star_name": "⭐ Ngôi Sao 2: Tiêu Chuẩn Giao Ước", "era": "Trang 3 & 5 • Giao Ước Của Thần", "exact_quote": "Trong mỗi thời đại, Giao Ước chính là tiêu chuẩn tuyệt đối, bất biến. Con đường của chân lý là con đường sự sống, con đường của phi chân lý là sự chết. Người có tiêu chuẩn là Giao Ước thì suy nghĩ và hành động đều rất vững vàng, không bị những cái tầm thường làm cho lo lắng, rúng động.", "lesson_content": "Phải thấu hiểu và nhất định vâng giữ Giao Ước của thời đại ngày nay thì mới có thể nhận được Phước, thiên đàng và sự sống."}, {"star_name": "⭐ Ngôi Sao 3: Chiến Thắng Bản Thân", "era": "Trang 6 • Con Người Bên Trong", "exact_quote": "Hàng ngày chúng ta chiến tranh giữa con người bên ngoài và con người bên trong. Tinh thần, tư tưởng, tri thức bên trong phải chiến thắng thì mới có thể sống cuộc đời vạn sự như ý. Cuộc đời là bài toán khó, càng giải sớm thì càng là cuộc đời chiến thắng.", "lesson_content": "Không để con người bên ngoài chỉ lo toan ăn mặc ở mà đánh mất ước mơ, ước vọng. Phải chiến thắng và biến đổi bản thân mình mỗi ngày."}, {"star_name": "⭐ Ngôi Sao 4: Bài Học Lịch Sử A-đam", "era": "Trang 7 & 8 • Khởi Đầu Của Lịch Sử", "exact_quote": "Một dân tộc không biết lịch sử thì không có cội rễ, không có hiện tại và tương lai. Lịch sử 6000 năm của Kinh Thánh là Giao Ước của Thần. A-đam bị rắn cám dỗ bằng lời phi chân lý và đã vi phạm giao ước, thế nên ĐTH đã phải rời bỏ.", "lesson_content": "Phải thấu hiểu bắt đầu và quá trình 6000 năm. Nếu làm hành vi giống A-đam thì kết quả là thất bại; phải biết phân biệt chân lý để rút ra bài học chiến thắng."}, {"star_name": "⭐ Ngôi Sao 5: Lời Hứa Nhỏ Nhất & Biến Đổi", "era": "Trang 10 & 11 • Dân Được Chọn & Sự Biến Đổi", "exact_quote": "Dân được chọn khi nào mới có phước? Sau khi vâng giữ giao ước thì trở thành dân tộc thánh, trở thành vương quốc và thầy tế lễ của ĐCT. Từ người hay nói dối trở thành người từng lời từng lời giữ lời như nói trước mặt ĐTH, từng điều dù là lời hứa nhỏ nhất cũng hãy vâng giữ.", "lesson_content": "Bản thân tự hứa thì phải ghi nhớ và thực hiện, không viện cớ lý do. Đó là điều tối thiểu để tôn trọng và sống đúng giá trị trước mặt Đấng Tạo Hóa."}, {"star_name": "⭐ Ngôi Sao 6: Bài Học Sô-lô-môn & Sửa Đổi", "era": "Trang 12 & 13 • Tiêu Chuẩn Sửa Lỗi", "exact_quote": "Sô-lô-môn là vị vua thông minh nhất thế giới, tinh thông mọi thứ, nhưng Giao ước thứ nhất đã bị phá vỡ ở thời đại của ông vì thờ thần khác. Khi có vấn đề xảy ra làm thế nào để giải quyết? Phải nhìn nhận lại bản thân, mối quan hệ giữa bản thân với ĐCT, căn cứ tiêu chuẩn chân lý là Kinh Thánh để sửa chữa.", "lesson_content": "Không cậy sự thông minh xác thịt. Khi đối diện hoàn cảnh, phải căn cứ lời Kinh Thánh để nhìn nhận lại mình và sửa sai ngay thì mới đón nhận phước lành."}, {"star_name": "⭐ Ngôi Sao 7: Việc Mới & Hạt Giống ĐCT", "era": "Trang 14 & 15 • Con Cái Của Đấng Tạo Hóa", "exact_quote": "ĐCT sáng tạo vương quốc mới, dân tộc mới bằng những người được sinh ra từ hạt giống của ĐCT. Để có được điều này, ĐCT đã chờ đợi suốt 6000 năm. Hằng ngày chúng ta gọi ĐCT là Cha ơi Cha ơi, ĐCT muốn nghe nên hằng ngày hãy tìm kiếm, hỏi và cầu nguyện với Cha.", "lesson_content": "Con cái Đức Chúa Trời là điều tuyệt vời nhất mà Cha tìm kiếm suốt 6000 năm. Phải được tái sinh từ hạt giống Lời Cha và sống đời sống người con hiếu thảo."}, {"star_name": "⭐ Ngôi Sao 8: Người Thắng & Khải Huyền", "era": "Trang 16 • Thành Đạt Mục Đích 6000 Năm", "exact_quote": "Ở thời thành đạt này, người thắng cuộc và các anh em chiến đấu và chiến thắng bầy lũ của rồng thì trở thành người thắng của Khải Huyền. ĐCT, ĐCJ và thành thánh Giê-ru-sa-lem mới sẽ đến đồng hành và ngự trên người thắng.", "lesson_content": "Đích đến của 6000 năm lịch sử là sự đắc thắng, bước vào giao ước mới Khải Huyền và cùng Cha hưởng phước lành đời đời trọn vẹn."}];
@@ -471,7 +706,6 @@
       canvas.width = boxW;
       canvas.height = boxH;
 
-      // Coordinate scaling (base coords are 0..540 in X, 0..240 in Y)
       const scaleX = (boxW * 0.88) / 540;
       const scaleY = (boxH * 0.85) / 240;
       const offsetX = boxW * 0.06;
@@ -481,7 +715,6 @@
       ctx.strokeStyle = 'rgba(255, 215, 0, 0.2)';
       ctx.lineWidth = 1;
 
-      // Draw connecting faint lines between consecutive stars of the same letter/part
       for (let i = 0; i < starsData.length - 1; i++) {
         const s1 = starsData[i];
         const s2 = starsData[i+1];
@@ -497,7 +730,6 @@
         }
       }
 
-      // Create DOM star buttons
       starsData.forEach((s, idx) => {
         const starEl = document.createElement('div');
         starEl.className = 'const-star';
@@ -536,15 +768,90 @@
       document.getElementById('lessonModal').classList.remove('active');
     }
 
+    // Candle Wish Functions
+    function openCandleModal() {
+      document.getElementById('candleModal').classList.add('active');
+    }
+
+    function closeCandleModal() {
+      document.getElementById('candleModal').classList.remove('active');
+    }
+
+    function submitCandleWish() {
+      const sender = document.getElementById('candleSender').value.trim() || 'Người bạn thân yêu';
+      const msg = document.getElementById('candleMessage').value.trim();
+      if (!msg) {
+        alert('Xin hãy nhập lời chúc trước khi thắp nến nhé!');
+        return;
+      }
+
+      // Save to localStorage so wishes persist in this browser
+      const newCandle = {
+        sender: sender,
+        message: msg,
+        time: new Date().toLocaleDateString('vi-VN')
+      };
+
+      let savedCandles = [];
+      try {
+        savedCandles = JSON.parse(localStorage.getItem('quynh_an_candles') || '[]');
+      } catch(e) { savedCandles = []; }
+      savedCandles.unshift(newCandle);
+      localStorage.setItem('quynh_an_candles', JSON.stringify(savedCandles));
+
+      renderCustomCandle(newCandle, true);
+
+      document.getElementById('candleMessage').value = '';
+      closeCandleModal();
+
+      confetti({
+        particleCount: 100,
+        spread: 80,
+        origin: { y: 0.65 }
+      });
+    }
+
+    function renderCustomCandle(c, prepend = false) {
+      const grid = document.getElementById('candlesGrid');
+      const card = document.createElement('div');
+      card.className = 'candle-card';
+      card.innerHTML = `
+        <div class="candle-figure">
+          <div class="candle-flame"></div>
+          <div class="candle-wick"></div>
+          <div class="candle-body"></div>
+        </div>
+        <div class="candle-sender">🕯️ ${c.sender}</div>
+        <div class="candle-wish-text">“${c.message}”</div>
+        <div class="candle-time">${c.time}</div>
+      `;
+      if (prepend) {
+        grid.prepend(card);
+      } else {
+        grid.appendChild(card);
+      }
+    }
+
+    // Load saved candles on start
+    function loadSavedCandles() {
+      try {
+        const saved = JSON.parse(localStorage.getItem('quynh_an_candles') || '[]');
+        saved.forEach(c => renderCustomCandle(c, true));
+      } catch(e) {}
+    }
+
     window.onclick = function(e) {
       if (e.target.classList.contains('modal-overlay')) {
         e.target.classList.remove('active');
       }
     };
 
-    window.addEventListener('load', renderConstellation);
+    window.addEventListener('load', () => {
+      renderConstellation();
+      loadSavedCandles();
+    });
+
     window.addEventListener('resize', () => {
-      // Re-render on window resize for responsive layout
       const box = document.getElementById('constellationBox');
       const stars = box.querySelectorAll('.const-star');
       stars.forEach(s => s.remove());
