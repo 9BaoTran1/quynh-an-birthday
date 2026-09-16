@@ -235,57 +235,143 @@
     }
 
     /* ULTRA PROMINENT (+) BUTTON RIGHT ON THE CAKE */
-    .cake-plus-tag {
+    .cake-plus-container {
       position: absolute;
-      top: 50%;
-      left: 50%;
+      top: 63.5%;
+      left: 53.5%;
       transform: translate(-50%, -50%);
       pointer-events: auto;
-      cursor: pointer;
       z-index: 50;
       display: flex;
+      flex-direction: column;
       align-items: center;
-      gap: 6px;
-      background: linear-gradient(135deg, #ffb300, #ff5500);
+      cursor: pointer;
+    }
+
+    .cake-plus-tooltip {
+      background: rgba(12, 18, 38, 0.9);
+      border: 1.5px solid #ffd700;
+      color: #ffd700;
+      font-size: 0.72rem;
+      font-weight: 800;
+      padding: 3px 10px;
+      border-radius: 12px;
+      white-space: nowrap;
+      margin-bottom: 5px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.6), 0 0 10px rgba(255, 215, 0, 0.5);
+      animation: bounceTip 1.5s infinite ease-in-out;
+      pointer-events: none;
+    }
+
+    @keyframes bounceTip {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-4px); }
+    }
+
+    .cake-plus-tag {
+      position: relative;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: linear-gradient(135deg, #ff4500 0%, #ff8c00 50%, #ffd700 100%);
       border: 2.5px solid #ffffff;
-      padding: 6px 14px;
-      border-radius: 30px;
-      box-shadow: 0 0 25px 8px rgba(255, 180, 0, 0.95), 0 6px 16px rgba(0,0,0,0.7);
+      padding: 7px 18px 7px 10px;
+      border-radius: 40px;
+      box-shadow: 0 0 25px 8px rgba(255, 140, 0, 0.95), 0 6px 18px rgba(0,0,0,0.7);
       animation: pulsePlusTag 1.8s infinite ease-in-out;
       transition: all 0.25s ease;
     }
     .cake-plus-tag:hover {
-      transform: translate(-50%, -50%) scale(1.15);
-      box-shadow: 0 0 35px 12px rgba(255, 220, 0, 1);
+      transform: scale(1.12);
+      box-shadow: 0 0 35px 14px rgba(255, 200, 0, 1);
+    }
+
+    /* Radiating wave radar around the (+) button */
+    .cake-plus-tag::before {
+      content: '';
+      position: absolute;
+      top: -6px; left: -6px; right: -6px; bottom: -6px;
+      border-radius: 45px;
+      border: 2px solid rgba(255, 215, 0, 0.8);
+      animation: radarWave 2s infinite ease-out;
+      pointer-events: none;
+    }
+
+    @keyframes radarWave {
+      0% { transform: scale(0.95); opacity: 1; }
+      100% { transform: scale(1.35); opacity: 0; }
     }
 
     @keyframes pulsePlusTag {
-      0%, 100% { transform: translate(-50%, -50%) scale(1); }
-      50% { transform: translate(-50%, -50%) scale(1.1); }
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.08); }
     }
 
     .cake-plus-icon {
-      width: 26px;
-      height: 26px;
+      width: 28px;
+      height: 28px;
       background: #ffffff;
       border-radius: 50%;
-      color: #ff5500;
-      font-size: 1.35rem;
+      color: #ff3300;
+      font-size: 1.5rem;
       font-weight: 900;
       display: flex;
       align-items: center;
       justify-content: center;
       line-height: 1;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.4);
     }
 
     .cake-plus-label {
       color: #ffffff;
-      font-size: 0.85rem;
-      font-weight: 800;
-      letter-spacing: 0.5px;
+      font-size: 0.92rem;
+      font-weight: 900;
+      letter-spacing: 0.6px;
       text-transform: uppercase;
-      text-shadow: 0 1px 3px rgba(0,0,0,0.4);
+      text-shadow: 0 1px 4px rgba(0,0,0,0.6);
+    }
+
+    /* Floating Action Button (Fixed Bottom-Right) */
+    .floating-fab {
+      position: fixed;
+      bottom: 25px;
+      right: 25px;
+      z-index: 90;
+      background: linear-gradient(135deg, #ff4500, #ff8c00 60%, #ffd700);
+      color: #ffffff;
+      border: 2px solid #ffffff;
+      border-radius: 50px;
+      padding: 12px 22px;
+      font-weight: 800;
+      font-size: 0.92rem;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+      box-shadow: 0 6px 25px rgba(255, 69, 0, 0.6), 0 0 20px rgba(255, 215, 0, 0.4);
+      animation: pulseFab 2.2s infinite ease-in-out;
+      transition: all 0.3s ease;
+    }
+    .floating-fab:hover {
+      transform: scale(1.08) translateY(-3px);
+      box-shadow: 0 10px 32px rgba(255, 140, 0, 0.8), 0 0 25px rgba(255, 215, 0, 0.6);
+    }
+    .floating-fab-plus {
+      width: 24px;
+      height: 24px;
+      background: #ffffff;
+      border-radius: 50%;
+      color: #ff4500;
+      font-weight: 900;
+      font-size: 1.25rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      line-height: 1;
+    }
+    @keyframes pulseFab {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
     }
 
     .cake-helper-pill {
@@ -633,9 +719,12 @@
         </div>
 
         <!-- RỰC RỠ: NÚT DẤU CỘNG (+) 'THÊM NẾN' ĐẶT NGAY TRÊN BÁNH KEM -->
-        <div class="cake-plus-tag" onclick="openCandleModal()" title="Bấm vào đây để thêm lời chúc & thắp nến lên bánh">
-          <div class="cake-plus-icon">+</div>
-          <span class="cake-plus-label">Thắp Nến</span>
+        <div class="cake-plus-container" onclick="openCandleModal()" title="Bấm vào đây để thắp nến và gửi lời chúc">
+          <div class="cake-plus-tooltip">👆 Nhấp để thắp nến</div>
+          <div class="cake-plus-tag">
+            <div class="cake-plus-icon">+</div>
+            <span class="cake-plus-label">Thắp Nến</span>
+          </div>
         </div>
       </div>
     </div>
@@ -913,5 +1002,12 @@
       renderSkyConstellation();
     });
   </script>
+
+  <!-- Floating Action Button (Always Visible) -->
+  <div class="floating-fab" onclick="openCandleModal()" title="Thắp nến lên bánh kem và gửi lời chúc">
+    <div class="floating-fab-plus">+</div>
+    <span>Thắp Nến Lên Bánh</span>
+  </div>
+
 </body>
 </html>
