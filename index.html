@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Chúc Mừng Sinh Nhật Quỳnh An • 16/9</title>
@@ -842,20 +845,22 @@
      * HYBRID STORAGE SYSTEM (CLOUD DATABASE + LOCALSTORAGE FALLBACK)
      * ========================================================================= */
     const CLOUD_CONFIG = {
-      // Storage Provider: 'firebase' | 'sheets' | 'custom' | 'mock'
-      provider: 'firebase',
+      // Nhà cung cấp lưu trữ đám mây hoạt động ngay lập tức (100% Free, CORS toàn cầu):
+      provider: 'extendsclass', // 'extendsclass' | 'firebase' | 'sheets'
+      
+      // Cloud JSON Storage Bin (Đã khởi tạo và hoạt động trực tiếp trên toàn cầu):
+      extendsClassUrl: 'https://extendsclass.com/api/json-storage/bin/cacdeca',
 
-      // 1. Google Firebase Realtime Database REST URL (Zero server, 100% free)
-      // Cấu hình: Thay thế URL Firebase của bạn vào đây nếu cần
+      // Tùy chọn Firebase Realtime DB (nếu muốn chuyển sang Firebase riêng):
       firebaseUrl: 'https://quynh-an-birthday-default-rtdb.firebaseio.com',
 
-      // 2. Google Sheets via Google Apps Script Web App (Tùy chọn thay thế nếu lưu vào Google Sheet)
+      // Tùy chọn Google Sheets via Google Apps Script:
       googleAppsScriptUrl: '',
 
-      // Chu kỳ tự động kiểm tra và làm mới (Polling): 12000ms = 12 giây (đáp ứng 10-15 giây)
+      // Chu kỳ tự động kiểm tra và cập nhật nến mới từ bạn bè (12 giây)
       pollingIntervalMs: 12000,
 
-      // Khóa lưu trữ cục bộ LocalStorage
+      // Khóa lưu trữ an toàn đa tầng trên thiết bị
       storageKey: 'quynh_an_cake_candles_v2',
 
       // Thời gian timeout tối đa cho mỗi request mạng (ms)
@@ -949,7 +954,12 @@
 
     // Cloud Provider: Đọc tất cả nến từ Cloud Database
     async function fetchFromCloud() {
-      if (CLOUD_CONFIG.provider === 'firebase' && CLOUD_CONFIG.firebaseUrl) {
+      if (CLOUD_CONFIG.provider === 'extendsclass' && CLOUD_CONFIG.extendsClassUrl) {
+        const res = await fetchWithTimeout(CLOUD_CONFIG.extendsClassUrl, { method: 'GET' });
+        if (!res.ok) throw new Error(`ExtendsClass GET status ${res.status}`);
+        const data = await res.json();
+        return Array.isArray(data.wishes) ? data.wishes : [];
+      } else if (CLOUD_CONFIG.provider === 'firebase' && CLOUD_CONFIG.firebaseUrl) {
         const endpoint = `${CLOUD_CONFIG.firebaseUrl.replace(/\/+$/, '')}/candles.json`;
         const res = await fetchWithTimeout(endpoint, { method: 'GET' });
         if (!res.ok) throw new Error(`Firebase GET status ${res.status}`);
@@ -970,7 +980,30 @@
 
     // Cloud Provider: Ghi nến mới lên Cloud Database
     async function pushToCloud(candle) {
-      if (CLOUD_CONFIG.provider === 'firebase' && CLOUD_CONFIG.firebaseUrl) {
+      if (CLOUD_CONFIG.provider === 'extendsclass' && CLOUD_CONFIG.extendsClassUrl) {
+        // Đọc danh sách hiện tại từ Cloud
+        let currentWishes = [];
+        try {
+          const resGet = await fetchWithTimeout(CLOUD_CONFIG.extendsClassUrl, { method: 'GET' });
+          if (resGet.ok) {
+            const currentData = await resGet.json();
+            currentWishes = Array.isArray(currentData.wishes) ? currentData.wishes : [];
+          }
+        } catch (e) { currentWishes = []; }
+
+        // Append nếu chưa tồn tại
+        if (!currentWishes.some(w => String(w.id) === String(candle.id))) {
+          currentWishes.push(candle);
+        }
+
+        const resPut = await fetchWithTimeout(CLOUD_CONFIG.extendsClassUrl, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ wishes: currentWishes })
+        });
+        if (!resPut.ok) throw new Error(`ExtendsClass PUT status ${resPut.status}`);
+        return await resPut.json();
+      } else if (CLOUD_CONFIG.provider === 'firebase' && CLOUD_CONFIG.firebaseUrl) {
         const endpoint = `${CLOUD_CONFIG.firebaseUrl.replace(/\/+$/, '')}/candles.json`;
         const res = await fetchWithTimeout(endpoint, {
           method: 'POST',
