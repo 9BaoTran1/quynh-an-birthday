@@ -6,7 +6,7 @@
   <title>Chúc Mừng Sinh Nhật Quỳnh An • 16/9</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,600;0,700;1,400&display=swap" rel="stylesheet">
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
@@ -113,7 +113,7 @@
     .portrait-stage {
       position: relative;
       max-width: 540px;
-      margin: 0 auto 25px;
+      margin: 0 auto 20px;
       border-radius: 28px;
       padding: 12px;
       background: linear-gradient(145deg, rgba(255, 230, 150, 0.45), rgba(100, 140, 220, 0.3), rgba(255, 180, 200, 0.35));
@@ -182,7 +182,7 @@
       z-index: 21;
     }
 
-    /* Cake Candles Layer (Right on the Birthday Cake) */
+    /* Cake Candles Layer */
     .cake-layer-overlay {
       position: absolute;
       top: 0; left: 0;
@@ -217,7 +217,7 @@
     @keyframes cakeFlicker {
       0% { transform: scale(1) rotate(-1deg); opacity: 0.95; }
       50% { transform: scale(1.15, 0.92) rotate(2deg); opacity: 1; }
-      100% { transform: scale(0.92, 1.15) rotate(-2deg); opacity: 0.9; }
+      100% { transform: scale(0.92, 1.15) rotate(-2deg); opacity: 1; }
     }
 
     .cake-candle-wick {
@@ -234,39 +234,58 @@
       box-shadow: inset -1px 0 2px rgba(0,0,0,0.3);
     }
 
-    /* Big PLUS button placed RIGHT ON THE CAKE for easy adding */
-    .cake-plus-btn {
+    /* ULTRA PROMINENT (+) BUTTON RIGHT ON THE CAKE */
+    .cake-plus-tag {
       position: absolute;
-      top: 51.5%;
-      right: 36%;
-      transform: translate(50%, -50%);
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
       pointer-events: auto;
-      width: 38px;
-      height: 38px;
+      cursor: pointer;
+      z-index: 50;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: linear-gradient(135deg, #ffb300, #ff5500);
+      border: 2.5px solid #ffffff;
+      padding: 6px 14px;
+      border-radius: 30px;
+      box-shadow: 0 0 25px 8px rgba(255, 180, 0, 0.95), 0 6px 16px rgba(0,0,0,0.7);
+      animation: pulsePlusTag 1.8s infinite ease-in-out;
+      transition: all 0.25s ease;
+    }
+    .cake-plus-tag:hover {
+      transform: translate(-50%, -50%) scale(1.15);
+      box-shadow: 0 0 35px 12px rgba(255, 220, 0, 1);
+    }
+
+    @keyframes pulsePlusTag {
+      0%, 100% { transform: translate(-50%, -50%) scale(1); }
+      50% { transform: translate(-50%, -50%) scale(1.1); }
+    }
+
+    .cake-plus-icon {
+      width: 26px;
+      height: 26px;
+      background: #ffffff;
       border-radius: 50%;
-      background: linear-gradient(135deg, #ffd700, #ff8c00);
-      border: 2px solid #ffffff;
-      color: #0b111e;
-      font-size: 1.6rem;
+      color: #ff5500;
+      font-size: 1.35rem;
       font-weight: 900;
-      line-height: 1;
       display: flex;
       align-items: center;
       justify-content: center;
-      cursor: pointer;
-      box-shadow: 0 0 15px 5px rgba(255, 215, 0, 0.8), 0 4px 10px rgba(0,0,0,0.5);
-      animation: pulsePlus 1.8s infinite ease-in-out;
-      z-index: 40;
-      transition: transform 0.2s ease;
-    }
-    .cake-plus-btn:hover {
-      transform: translate(50%, -50%) scale(1.25);
-      box-shadow: 0 0 25px 8px rgba(255, 215, 0, 1);
+      line-height: 1;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.3);
     }
 
-    @keyframes pulsePlus {
-      0%, 100% { transform: translate(50%, -50%) scale(1); }
-      50% { transform: translate(50%, -50%) scale(1.14); }
+    .cake-plus-label {
+      color: #ffffff;
+      font-size: 0.85rem;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      text-shadow: 0 1px 3px rgba(0,0,0,0.4);
     }
 
     .cake-helper-pill {
@@ -274,13 +293,17 @@
       align-items: center;
       gap: 8px;
       background: rgba(22, 32, 60, 0.85);
-      border: 1px solid rgba(255, 215, 0, 0.5);
-      padding: 8px 20px;
+      border: 1.5px solid rgba(255, 215, 0, 0.6);
+      padding: 10px 22px;
       border-radius: 30px;
       color: #ffd700;
-      font-size: 0.92rem;
-      margin-top: 12px;
+      font-size: 0.94rem;
+      margin-top: 15px;
       box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+      cursor: pointer;
+    }
+    .cake-helper-pill:hover {
+      background: rgba(255, 215, 0, 0.2);
     }
 
     /* Action bar below portrait */
@@ -297,20 +320,20 @@
       background: linear-gradient(135deg, #ffd700 0%, #ff8c00 100%);
       color: #0b111e;
       border: none;
-      font-weight: 700;
+      font-weight: 800;
       font-size: 1.05rem;
-      padding: 13px 32px;
+      padding: 14px 34px;
       border-radius: 50px;
       cursor: pointer;
       display: inline-flex;
       align-items: center;
       gap: 10px;
-      box-shadow: 0 6px 20px rgba(255, 140, 0, 0.45);
+      box-shadow: 0 6px 22px rgba(255, 140, 0, 0.5);
       transition: all 0.3s ease;
     }
     .light-on-cake-btn:hover {
       transform: scale(1.05);
-      box-shadow: 0 10px 30px rgba(255, 215, 0, 0.65);
+      box-shadow: 0 10px 32px rgba(255, 215, 0, 0.7);
     }
 
     /* Candles List Section */
@@ -609,13 +632,16 @@
           <!-- Dynamic Candles on the cake -->
         </div>
 
-        <!-- Big Easy-to-Understand PLUS (+) Button Right on Cake -->
-        <button class="cake-plus-btn" onclick="openCandleModal()" title="Bấm vào dấu (+) để thêm lời chúc & thắp nến lên bánh">+</button>
+        <!-- RỰC RỠ: NÚT DẤU CỘNG (+) 'THÊM NẾN' ĐẶT NGAY TRÊN BÁNH KEM -->
+        <div class="cake-plus-tag" onclick="openCandleModal()" title="Bấm vào đây để thêm lời chúc & thắp nến lên bánh">
+          <div class="cake-plus-icon">+</div>
+          <span class="cake-plus-label">Thắp Nến</span>
+        </div>
       </div>
     </div>
 
-    <div class="cake-helper-pill">
-      <span>✨ Các ngôi sao trên bầu trời xếp thành chữ <strong>QUỲNH AN</strong> (chạm để mở bài học 6000 năm). Bấm dấu <strong>(+)</strong> trên bánh để thắp thêm nến! ✨</span>
+    <div class="cake-helper-pill" onclick="openCandleModal()">
+      <span>✨ Bấm vào nút <strong>[+ Thắp Nến]</strong> trên bánh kem để gửi lời chúc mừng sinh nhật chị Quỳnh An! ✨</span>
     </div>
 
     <div class="cake-actions-bar">
