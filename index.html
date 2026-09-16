@@ -627,6 +627,91 @@
       line-height: 1.7;
     }
 
+    
+    /* Card Action Buttons (Sửa / Xóa) */
+    .candle-card-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 12px;
+      width: 100%;
+      justify-content: center;
+      border-top: 1px solid rgba(255, 215, 0, 0.15);
+      padding-top: 10px;
+    }
+    .card-action-btn {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 215, 0, 0.35);
+      color: #ffd700;
+      font-size: 0.78rem;
+      font-weight: 700;
+      padding: 5px 12px;
+      border-radius: 15px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      transition: all 0.2s ease;
+    }
+    .card-action-btn:hover {
+      background: rgba(255, 215, 0, 0.25);
+      transform: translateY(-1px);
+    }
+    .card-action-btn.delete-btn {
+      border-color: rgba(255, 110, 110, 0.4);
+      color: #ff9999;
+    }
+    .card-action-btn.delete-btn:hover {
+      background: rgba(255, 70, 70, 0.25);
+      color: #ffcccc;
+    }
+
+    /* Modal Detail Actions */
+    .modal-detail-actions {
+      display: flex;
+      gap: 12px;
+      margin-top: 20px;
+      padding-top: 16px;
+      border-top: 1px solid rgba(255, 215, 0, 0.25);
+      justify-content: flex-end;
+    }
+    .candle-btn-edit {
+      background: linear-gradient(135deg, rgba(255, 215, 0, 0.2), rgba(255, 140, 0, 0.3));
+      border: 1.5px solid #ffd700;
+      color: #ffd700;
+      font-weight: 700;
+      font-size: 0.88rem;
+      padding: 9px 20px;
+      border-radius: 25px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .candle-btn-edit:hover {
+      background: linear-gradient(135deg, #ffd700, #ff8c00);
+      color: #0b111e;
+      transform: translateY(-1px);
+    }
+    .candle-btn-delete {
+      background: rgba(255, 60, 60, 0.15);
+      border: 1.5px solid rgba(255, 100, 100, 0.6);
+      color: #ff9999;
+      font-weight: 700;
+      font-size: 0.88rem;
+      padding: 9px 20px;
+      border-radius: 25px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .candle-btn-delete:hover {
+      background: rgba(255, 60, 60, 0.35);
+      color: #ffffff;
+      transform: translateY(-1px);
+    }
+    .candle-default-tag {
+      font-size: 0.74rem;
+      color: #ffd700;
+      margin-top: 10px;
+      font-style: italic;
+      opacity: 0.85;
     .candle-form-group {
       margin-top: 15px;
     }
@@ -766,6 +851,25 @@
       <div class="quote-label">Lời Chúc Sinh Nhật Gửi Tới Quỳnh An:</div>
       <div class="modal-quote" id="detailMessage">Nội dung lời chúc</div>
       <div style="font-size: 0.8rem; color: #ffd700;" id="detailTime">Thời gian</div>
+      <div id="detailActionContainer"></div>
+    </div>
+  </div>
+
+  <!-- Edit Candle Modal -->
+  <div class="modal-overlay" id="editCandleModal">
+    <div class="modal-card">
+      <button class="modal-close" onclick="closeEditCandleModal()">&times;</button>
+      <div class="modal-era">✏️ Chỉnh Sửa Lời Chúc</div>
+      <div class="modal-title">Cập Nhật Lời Chúc Cho Quỳnh An</div>
+      <input type="hidden" id="editCandleId">
+      <div class="candle-form-group">
+        <input type="text" id="editCandleSender" placeholder="Tên của bạn...">
+        <textarea id="editCandleMessage" rows="4" placeholder="Viết lại lời chúc ấm áp gửi tới chị Quỳnh An..."></textarea>
+      </div>
+      <div style="display: flex; gap: 10px; justify-content: flex-end; margin-top: 15px;">
+        <button type="button" onclick="closeEditCandleModal()" style="background: rgba(255,255,255,0.12); color: #fff; border: 1px solid rgba(255,255,255,0.3); padding: 10px 22px; border-radius: 30px; cursor: pointer; font-weight: 600;">Hủy</button>
+        <button type="button" class="light-btn-submit" onclick="saveEditedCandle()" style="padding: 10px 26px;">💾 Lưu Thay Đổi</button>
+      </div>
     </div>
   </div>
 
@@ -1151,6 +1255,7 @@
         cakeContainer.appendChild(candleSpot);
 
         // 2. Thẻ lời chúc ở danh sách phía dưới
+        const isDefault = defaultCandles.some(d => String(d.id) === String(c.id));
         const card = document.createElement('div');
         card.className = 'candle-card';
         card.innerHTML = `
@@ -1159,26 +1264,231 @@
             <div class="candle-wick"></div>
             <div class="candle-body"></div>
           </div>
-          <div class="candle-sender">🕯️ ${c.sender}</div>
-          <div class="candle-wish-text">“${c.message}”</div>
-          <div class="candle-time">${c.time || '16/09'}</div>
+          <div class="candle-sender">🕯️ ${escapeHtml(c.sender)}</div>
+          <div class="candle-wish-text">“${escapeHtml(c.message)}”</div>
+          <div class="candle-time">${escapeHtml(c.time || '16/09')}</div>
+          ${isDefault 
+            ? '<div class="candle-default-tag">✨ Lời Hứa Giao Ước 6000 Năm</div>' 
+            : `<div class="candle-card-actions">
+                 <button class="card-action-btn edit-btn" onclick="openEditModalById('${c.id}', event)">✏️ Sửa</button>
+                 <button class="card-action-btn delete-btn" onclick="deleteCandleById('${c.id}', event)">🗑️ Xóa</button>
+               </div>`
+          }
         `;
         card.onclick = () => showCandleDetail(c);
         wallContainer.appendChild(card);
       });
     }
 
+    function escapeHtml(text) {
+      if (!text) return '';
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    let currentDetailCandle = null;
+
     function showCandleDetail(candle) {
+      currentDetailCandle = candle;
       document.getElementById('detailSender').innerText = '🕯️ Lời Chúc Từ: ' + candle.sender;
       document.getElementById('detailMessage').innerText = '“' + candle.message + '”';
       document.getElementById('detailTime').innerText = '✨ Thắp sáng ngày: ' + (candle.time || '16/09');
-      document.getElementById('candleDetailModal').classList.add('active');
 
+      const isDefault = defaultCandles.some(d => String(d.id) === String(candle.id));
+      const actionBox = document.getElementById('detailActionContainer');
+      if (actionBox) {
+        if (isDefault) {
+          actionBox.innerHTML = '<div style="font-size: 0.82rem; color: #ffd700; margin-top: 15px; font-style: italic; text-align: center;">✨ Lời chúc giao ước cố định của Cha trên trời suốt 6000 năm</div>';
+        } else {
+          actionBox.innerHTML = `
+            <div class="modal-detail-actions">
+              <button class="candle-btn-edit" onclick="openEditModalFromDetail()">✏️ Chỉnh Sửa</button>
+              <button class="candle-btn-delete" onclick="deleteCurrentDetailCandle()">🗑️ Xóa Lời Chúc</button>
+            </div>
+          `;
+        }
+      }
+
+      document.getElementById('candleDetailModal').classList.add('active');
       confetti({ particleCount: 40, spread: 60, origin: { y: 0.5 } });
     }
 
     function closeCandleDetail() {
       document.getElementById('candleDetailModal').classList.remove('active');
+      currentDetailCandle = null;
+    }
+
+    function openEditModalFromDetail() {
+      if (!currentDetailCandle) return;
+      openEditModalById(currentDetailCandle.id);
+    }
+
+    function deleteCurrentDetailCandle() {
+      if (!currentDetailCandle) return;
+      deleteCandleById(currentDetailCandle.id);
+    }
+
+    // Mở modal chỉnh sửa theo ID
+    function openEditModalById(candleId, event) {
+      if (event) event.stopPropagation();
+      const candle = allCandles.find(c => String(c.id) === String(candleId));
+      if (!candle) return;
+
+      document.getElementById('editCandleId').value = candle.id;
+      document.getElementById('editCandleSender').value = candle.sender || '';
+      document.getElementById('editCandleMessage').value = candle.message || '';
+      document.getElementById('editCandleModal').classList.add('active');
+    }
+
+    function closeEditCandleModal() {
+      document.getElementById('editCandleModal').classList.remove('active');
+    }
+
+    // Lưu lời chúc đã chỉnh sửa (Cập nhật LocalStorage & Firebase Realtime DB)
+    async function saveEditedCandle() {
+      const candleId = document.getElementById('editCandleId').value;
+      const newSender = document.getElementById('editCandleSender').value.trim() || 'Người bạn thân yêu';
+      const newMsg = document.getElementById('editCandleMessage').value.trim();
+
+      if (!newMsg) {
+        alert('Xin hãy nhập nội dung lời chúc trước khi lưu!');
+        return;
+      }
+
+      const candle = allCandles.find(c => String(c.id) === String(candleId));
+      if (!candle) return;
+
+      candle.sender = newSender;
+      candle.message = newMsg;
+      candle.edited = true;
+
+      // 1. Cập nhật LocalStorage
+      const local = getLocalCandles();
+      const updatedLocal = local.map(c => String(c.id) === String(candleId) ? { ...c, sender: newSender, message: newMsg, edited: true } : c);
+      saveLocalCandles(updatedLocal);
+
+      // 2. Render lại giao diện ngay lập tức
+      renderAllCandles();
+      closeEditCandleModal();
+      closeCandleDetail();
+      showLiveToast(`✨ Đã cập nhật lời chúc của "${newSender}" thành công!`);
+
+      // 3. Cập nhật bất đồng bộ lên Firebase Realtime DB
+      try {
+        await updateInCloud(candle);
+        showLiveToast(`☁️ Đã đồng bộ chỉnh sửa lên đám mây!`);
+      } catch (err) {
+        console.warn('Cập nhật đám mây chưa thành công:', err);
+      }
+    }
+
+    // Xóa lời chúc (Xóa LocalStorage & Firebase Realtime DB)
+    async function deleteCandleById(candleId, event) {
+      if (event) event.stopPropagation();
+      const candle = allCandles.find(c => String(c.id) === String(candleId));
+      if (!candle) return;
+
+      if (!confirm(`Bạn có chắc chắn muốn xóa ngọn nến và lời chúc của "${candle.sender}" không?`)) {
+        return;
+      }
+
+      // 1. Xóa khỏi allCandles
+      allCandles = allCandles.filter(c => String(c.id) !== String(candleId));
+      knownCandleKeys.delete(getCandleKey(candle));
+
+      // 2. Xóa khỏi LocalStorage
+      const local = getLocalCandles();
+      const updatedLocal = local.filter(c => String(c.id) !== String(candleId));
+      saveLocalCandles(updatedLocal);
+
+      // 3. Render lại giao diện ngay lập tức
+      renderAllCandles();
+      closeCandleDetail();
+      showLiveToast(`🗑️ Đã xóa ngọn nến và lời chúc thành công!`);
+
+      // 4. Xóa bất đồng bộ khỏi Firebase Realtime DB
+      try {
+        await deleteFromCloud(candle);
+        showLiveToast(`☁️ Đã xóa ngọn nến trên đám mây!`);
+      } catch (err) {
+        console.warn('Xóa trên đám mây chưa thành công:', err);
+      }
+    }
+
+    // Helper: Cập nhật Cloud Firebase (PATCH)
+    async function updateInCloud(candle) {
+      if (CLOUD_CONFIG.provider === 'firebase' && CLOUD_CONFIG.firebaseUrl) {
+        const path = CLOUD_CONFIG.firebasePath || 'candles';
+        let cloudKey = candle.cloudKey;
+
+        // Nếu chưa có cloudKey, tìm theo id
+        if (!cloudKey) {
+          const endpoint = `${CLOUD_CONFIG.firebaseUrl.replace(/\/+$/, '')}/${path}.json`;
+          const res = await fetchWithTimeout(endpoint, { method: 'GET' });
+          if (res.ok) {
+            const data = await res.json();
+            if (data) {
+              for (const [k, v] of Object.entries(data)) {
+                if (String(v.id) === String(candle.id)) {
+                  cloudKey = k;
+                  candle.cloudKey = k;
+                  break;
+                }
+              }
+            }
+          }
+        }
+
+        if (cloudKey) {
+          const itemEndpoint = `${CLOUD_CONFIG.firebaseUrl.replace(/\/+$/, '')}/${path}/${cloudKey}.json`;
+          const patchRes = await fetchWithTimeout(itemEndpoint, {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              sender: candle.sender,
+              message: candle.message,
+              edited: true
+            })
+          });
+          if (!patchRes.ok) throw new Error(`Firebase PATCH status ${patchRes.status}`);
+          return await patchRes.json();
+        }
+      }
+      return { success: true };
+    }
+
+    // Helper: Xóa khỏi Cloud Firebase (DELETE)
+    async function deleteFromCloud(candle) {
+      if (CLOUD_CONFIG.provider === 'firebase' && CLOUD_CONFIG.firebaseUrl) {
+        const path = CLOUD_CONFIG.firebasePath || 'candles';
+        let cloudKey = candle.cloudKey;
+
+        // Nếu chưa có cloudKey, tìm theo id
+        if (!cloudKey) {
+          const endpoint = `${CLOUD_CONFIG.firebaseUrl.replace(/\/+$/, '')}/${path}.json`;
+          const res = await fetchWithTimeout(endpoint, { method: 'GET' });
+          if (res.ok) {
+            const data = await res.json();
+            if (data) {
+              for (const [k, v] of Object.entries(data)) {
+                if (String(v.id) === String(candle.id)) {
+                  cloudKey = k;
+                  break;
+                }
+              }
+            }
+          }
+        }
+
+        if (cloudKey) {
+          const itemEndpoint = `${CLOUD_CONFIG.firebaseUrl.replace(/\/+$/, '')}/${path}/${cloudKey}.json`;
+          const delRes = await fetchWithTimeout(itemEndpoint, { method: 'DELETE' });
+          if (!delRes.ok) throw new Error(`Firebase DELETE status ${delRes.status}`);
+          return await delRes.json();
+        }
+      }
+      return { success: true };
     }
 
     function openCandleModal() {
